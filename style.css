@@ -21,6 +21,7 @@ body {
 }
 
 .container {
+  direction: ltr;
   display: flex;
   flex-flow: column;
   align-items: center;
@@ -28,7 +29,6 @@ body {
 
 .countries {
   display: flex;
-
   font-size: 1.8rem;
   opacity: 0;
   transition: opacity 1s;
@@ -58,7 +58,7 @@ body {
 }
 
 .neighbour {
-  transform: scale(0.7) translateY(1rem);
+  transform: scale(0.6) ;
   margin-left: 0;
 }
 
