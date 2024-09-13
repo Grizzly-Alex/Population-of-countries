@@ -12,6 +12,20 @@ const requestXML= function (url) {
     return request;
 };
 
+const requestFetchAPI = function (url) {
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            displayCountry(data[0]);
+            const firstNeighbour = data[0].borders[0];
+
+            if(!firstNeighbour) return;
+            return fetch(`https://restcountries.com/v3.1/alpha/${firstNeighbour}`)
+        })
+        .then(response => response.json())
+        .then(data => displayCountry(data[0], 'neighbour'));
+};
+
 
 const displayCountry = function (country, className = ''){
     const currensyName = Object.values(country.currencies)[0];
@@ -27,8 +41,7 @@ const displayCountry = function (country, className = ''){
             <p class="country__row"><span>🗣️</span>${languageName}</p>
             <p class="country__row"><span>💰</span>${currensyName.symbol} ${currensyName.name}</p>
           </div>
-        </section>
-    `;
+        </section>`;
 
     countriesContainer.insertAdjacentHTML('beforeend', html);
     countriesContainer.style.opacity = 1;
@@ -51,7 +64,6 @@ const getCountryAndBorderCountries = function (country){
         const [data1] = JSON.parse(this.responseText);
 
         //show country
-        console.log(data1);
         displayCountry(data1);
 
         if(!data1.borders.some(i => i)) return;
@@ -68,4 +80,6 @@ const getCountryAndBorderCountries = function (country){
     });
 };
 
-getCountryAndBorderCountries('belarus');
+//getCountryAndBorderCountries('belarus');
+
+requestFetchAPI(`https://restcountries.com/v3.1/name/canada`);
