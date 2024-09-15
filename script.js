@@ -5,6 +5,20 @@ const countriesContainer = document.querySelector('.countries');
 
 //////////////////////////////////////////////////////
 
+
+const displayError = function(message) {
+    countriesContainer.insertAdjacentText('beforeend', message);
+    countriesContainer.opacity = 1;
+};
+
+const getDataAndConvertJson = function(url, errorMessage = 'Что-то пошло не так.') {
+    return fetch(url)
+    .then(response => {         
+        if(!response.ok) throw new Error(`${errorMessage} Ошибка: ${response.status}`);
+        return response.json();
+    })
+}
+
 const requestXML= function (url) {
     const request = new XMLHttpRequest();
     request.open('GET', url);
@@ -12,20 +26,24 @@ const requestXML= function (url) {
     return request;
 };
 
-const requestFetchAPI = function (url) {
-    fetch(url)
-        .then(response => response.json())
+const getCountryAndBorderFetchAPI = function (url) {
+    getDataAndConvertJson(url, `Страна не найдена.`)
         .then(data => {
             displayCountry(data[0]);
+            if (!data[0].hasOwnProperty('borders')) throw new Error('Соседних стран не найдено!')
+                
             const firstNeighbour = data[0].borders[0];
 
-            if(!firstNeighbour) return;
-            return fetch(`https://restcountries.com/v3.1/alpha/${firstNeighbour}`)
+            return getDataAndConvertJson(`https://restcountries.com/v3.1/alpha/${firstNeighbour}`, `Страна не найдена.`)
         })
-        .then(response => response.json())
-        .then(data => displayCountry(data[0], 'neighbour'));
+        .then(data => displayCountry(data[0], 'neighbour'))
+        .catch(e => {
+            displayError(`Что-то пошло не так: ${e.message} Попробуйте ещё раз!`);
+        })
+        .finally(() => {
+            countriesContainer.style.opacity = 1;
+        });
 };
-
 
 const displayCountry = function (country, className = ''){
     const currensyName = Object.values(country.currencies)[0];
@@ -82,4 +100,14 @@ const getCountryAndBorderCountries = function (country){
 
 //getCountryAndBorderCountries('belarus');
 
-requestFetchAPI(`https://restcountries.com/v3.1/name/canada`);
+//requestFetchAPI(`https://restcountries.com/v3.1/name/canada`);
+
+/*
+btn.addEventListener('click', function () {
+    const request = requestFetchAPI(`https://restcountries.com/v3.1/name/russian`);
+    console.log(request);
+
+});*/
+
+getCountryAndBorderFetchAPI(`https://restcountries.com/v3.1/name/poland`);
+
