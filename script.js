@@ -37,7 +37,7 @@ const getCountryAndBorderFetchAPI = function (url) {
 
 const displayError = function(message) {
     countriesContainer.insertAdjacentText('beforeend', message);
-    countriesContainer.opacity = 1;
+    countriesContainer.style.opacity = 1;
 };
 
 const getDataAndConvertJson = function(url, errorMessage = 'Что-то пошло не так.') {
@@ -189,6 +189,7 @@ const getUserPosition = function() {
     });
 };
 
+
 /*
 getUserPosition()
     .then(pos => console.log(pos))
@@ -219,7 +220,7 @@ const displayUserCountry = function () {
     })
 };
 
-
+/*
 const imageContainer = document.querySelector('.images');
 let currentImage;
 
@@ -272,3 +273,58 @@ createImageElement('img/image1.jpg')
         console.log(`Третее Изображение спрятано.`);
     })
     .catch(e => console.error(e));
+*/
+
+const getCountryData = async function(){
+    try{
+        const position = await getUserPosition();
+        const { latitude: lat, longitude: lng } = position.coords;
+        const geocodingResponse = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`);
+
+        if (!geocodingResponse.ok) throw new Error('Проблема с извлечением местоположения');
+        const geocodingData = await geocodingResponse.json();
+    
+        const response = await fetch(`https://restcountries.com/v3.1/name/${geocodingData.country.toLowerCase()}`);
+
+        if (!geocodingResponse.ok) throw new Error('Проблема с получением страны');
+        const [data] = await response.json();
+    
+        displayCountry(data);
+        return `You are in ${geocodingData.city}, ${geocodingData.country}`;
+
+    }
+    catch(e) {
+        console.error(`${e}`);
+        displayError(`Что-то пошло не так: ${e.message} Попробуйте ещё раз!`);
+
+        //отклоняем promise, возвращаемое из фсинхронной функции
+        throw e;
+    }
+};
+
+console.log(`Будем получать местоположение`);
+
+//const data = getCountryData();
+//console.log(data);
+
+/*
+getCountryData()
+    .then(place => console.log(place))
+    .catch(e => console.error(`2  ${e.message}`))
+    .finally(() => console.log(`получили местоположение`));
+*/
+
+(async function() {
+    try{
+        const data = await getCountryData();
+    }
+    catch(e){
+        console.error(`2  ${e.message}`)
+    }
+    finally{
+        console.log(`получили местоположение`)
+    }
+    
+})
+
+console.log(`Получили местоположение`);
