@@ -146,14 +146,14 @@ const lotteryPromise = new Promise(function (resolve, reject) {
 
 
 // Promisifying (промисификация) функиции setTimeout()
-/*
+
 const wait = function(seconds) {
     return new Promise(function(resolve){
         setTimeout(resolve, seconds * 1000);
     });
 }
 
-wait(1).then(() =>{
+/*wait(1).then(() =>{
         console.log(`Длительность ожидания 1 секунды`);
         return wait(1);
     })
@@ -220,5 +220,55 @@ const displayUserCountry = function () {
 };
 
 
-displayUserCountry();
+const imageContainer = document.querySelector('.images');
+let currentImage;
 
+
+const createImageElement = function(imagePath) {
+    return new Promise(function(resolve, reject) {
+        const imgElement = document.createElement('img');
+        imgElement.src = imagePath;
+
+        imgElement.addEventListener('load', function(){
+            imageContainer.append(imgElement);
+            resolve(imgElement);
+        });
+
+        imgElement.addEventListener('error', function(){
+            reject(new Error('Изображение не найдено'));
+        });
+    });
+};
+
+
+createImageElement('img/image1.jpg')
+    .then(image => {
+        currentImage = image;
+        console.log(`Первое Изображение загружено.`);
+        return wait(2);
+    })
+    .then(() => {
+        currentImage.style.display = 'none';
+        console.log(`Первое Изображение спрятано.`);
+        return createImageElement('img/image2.jpg')
+    })
+    .then(image => {
+        currentImage = image;
+        console.log(`Второе Изображение загружено.`);
+        return wait(2);
+    })
+    .then(() => {
+        currentImage.style.display = 'none';
+        console.log(`Второе Изображение спрятано.`);
+        return createImageElement('img/image3.jpg')
+    })
+    .then(image => {
+        currentImage = image;
+        console.log(`Третее Изображение загружено.`);
+        return wait(2);
+    })
+    .then(() => {
+        currentImage.style.display = 'none';
+        console.log(`Третее Изображение спрятано.`);
+    })
+    .catch(e => console.error(e));
