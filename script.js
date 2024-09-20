@@ -6,13 +6,13 @@ const countriesContainer = document.querySelector('.countries');
 //////////////////////////////////////////////////////
 
 
-/*
+
 const requestXML= function (url) {
     const request = new XMLHttpRequest();
     request.open('GET', url);
     request.send();
     return request;
-};*/
+};
 
 
 const getCountryAndBorderFetchAPI = function (url) {
@@ -67,7 +67,7 @@ const displayCountry = function (country, className = ''){
 
     countriesContainer.insertAdjacentHTML('beforeend', html);
     countriesContainer.style.opacity = 1;
-}
+};
 
 ///////////////////////////////////////////////////////////////
 // Пример работы с циклом событий
@@ -81,7 +81,7 @@ const getCountryData = function (country){
         const [data] = JSON.parse(this.responseText);
         displayCountry(data);
     });
-};
+};*/
 
 const getCountryAndBorderCountries = function (country){
     //AJAX call
@@ -106,7 +106,7 @@ const getCountryAndBorderCountries = function (country){
         });
     });
 };
-*/
+
 
 
 /*
@@ -302,7 +302,6 @@ const getCountryData = async function(){
     }
 };
 
-console.log(`Будем получать местоположение`);
 
 //const data = getCountryData();
 //console.log(data);
@@ -313,7 +312,7 @@ getCountryData()
     .catch(e => console.error(`2  ${e.message}`))
     .finally(() => console.log(`получили местоположение`));
 */
-
+/*
 (async function() {
     try{
         const data = await getCountryData();
@@ -327,4 +326,31 @@ getCountryData()
     
 })
 
-console.log(`Получили местоположение`);
+console.log(`Получили местоположение`);*/
+
+const print3CountriesCapitals = async function(country1, country2, country3){
+    try{
+        /*
+        const [country1Data] = await getDataAndConvertJson(`https://restcountries.com/v3.1/name/${country1}`);
+        const [country2Data] = await getDataAndConvertJson(`https://restcountries.com/v3.1/name/${country2}`);
+        const [country3Data] = await getDataAndConvertJson(`https://restcountries.com/v3.1/name/${country3}`);
+        console.log(country1Data.capital, country2Data.capital, country3Data.capital)
+        */
+
+        const countriesData = await Promise.all([
+            getDataAndConvertJson(`https://restcountries.com/v3.1/name/${country1}`),
+            getDataAndConvertJson(`https://restcountries.com/v3.1/name/${country2}`),
+            getDataAndConvertJson(`https://restcountries.com/v3.1/name/${country3}`)
+        ]);
+
+        countriesData.forEach(data => console.log(data[0].capital))
+    }
+    catch(e){
+        console.error(e);
+
+    }
+
+};
+
+
+print3CountriesCapitals('poland', 'germany', 'france');
