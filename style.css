@@ -28,7 +28,7 @@ body {
 }
 
 .countries {
-  display: flex;
+  display: block;
   font-size: 1.8rem;
   opacity: 0;
   transition: opacity 1s;

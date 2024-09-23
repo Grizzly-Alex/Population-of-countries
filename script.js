@@ -92,5 +92,8 @@ const displayAllInformationUserCountry = async function() {
 };
 
 
-btn.addEventListener('click', displayAllInformationUserCountry);
+btn.addEventListener('click', function() {
+    this.style.opacity = 0;
+    displayAllInformationUserCountry();
+});
 
